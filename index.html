@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faizan AI – Gemini Powered</title>
+    <title>Faizan AI – OpenRouter Free Models</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
@@ -221,8 +222,19 @@
             display: flex; align-items: center; justify-content: center;
             font-size: 0.9rem;
             transition: all 0.2s;
+            position: relative;
         }
         .icon-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--bg-input); }
+        .api-key-warning {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 10px;
+            height: 10px;
+            background: var(--error);
+            border-radius: 50%;
+            display: none;
+        }
 
         /* MAIN LAYOUT */
         .main { display: flex; flex: 1; overflow: hidden; }
@@ -572,864 +584,527 @@
             font-weight: 600;
             color: var(--text-secondary);
             margin-bottom: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
         }
         .modal-input {
             width: 100%;
+            padding: 12px 14px;
             background: var(--bg-input);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 11px 14px;
             color: var(--text-primary);
-            font-size: 0.85rem;
-            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
             outline: none;
-            transition: border-color 0.2s;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
         .modal-input:focus { border-color: var(--accent); }
-        .modal-input::placeholder { color: var(--text-muted); }
-        .api-status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 14px;
-            background: var(--bg-input);
-            border-radius: 8px;
-            font-size: 0.78rem;
-            margin-bottom: 18px;
-            border: 1px solid var(--border);
-        }
-        .status-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: var(--text-muted);
-        }
-        .status-dot.active { background: var(--success); box-shadow: 0 0 8px var(--success); }
-        .status-dot.error { background: var(--error); box-shadow: 0 0 8px var(--error); }
-        .save-btn {
+        .modal-btn {
             width: 100%;
             padding: 12px;
             background: var(--accent);
             border: none;
             border-radius: 10px;
             color: white;
-            font-size: 0.88rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 0 16px var(--accent-glow);
+            transition: background 0.2s;
         }
-        .save-btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
-        .small-btn {
-            padding: 6px 12px;
-            font-size: 0.75rem;
-            width: auto;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* THEME PICKER */
-        .theme-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .theme-option {
-            aspect-ratio: 1;
-            border-radius: 12px;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem;
-            position: relative;
-            overflow: hidden;
-        }
-        .theme-option.selected { border-color: white; box-shadow: 0 0 16px rgba(255,255,255,0.3); }
-        .theme-option:hover { transform: scale(1.05); }
-        .theme-label {
-            font-size: 0.65rem;
-            text-align: center;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-        .theme-wrap { text-align: center; }
-
-        /* TOAST */
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: var(--bg-card);
-            border: 1px solid var(--border-accent);
-            padding: 10px 18px;
-            border-radius: 10px;
-            font-size: 0.82rem;
-            color: var(--text-primary);
-            box-shadow: var(--shadow);
-            z-index: 9999;
-            opacity: 0;
-            transition: all 0.3s;
-            pointer-events: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-        /* SCROLLBAR */
-        .home-screen::-webkit-scrollbar { width: 4px; }
-        .home-screen::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-        @media (max-width: 600px) {
-            .sidebar { display: none; }
-            .header { padding: 12px 16px; }
-            .model-btn { max-width: 130px; font-size: 0.75rem; }
-            .message-wrap { padding: 6px 14px; }
-            .suggestion-grid { grid-template-columns: 1fr 1fr; }
-            .home-ai-title { font-size: 2.2rem; }
-        }
-
-        /* LOADING SCREEN */
-        #loadingScreen {
-            position: fixed;
-            inset: 0;
-            background: #0a0e1a;
-            z-index: 99999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 28px;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-        }
-        #loadingScreen.hide {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-        }
-        .ls-logo {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            animation: lsFadeIn 0.8s ease forwards;
-            opacity: 0;
-        }
-        .ls-icon {
-            width: 64px; height: 64px;
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            border-radius: 18px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2rem;
-            box-shadow: 0 0 40px rgba(59,130,246,0.5);
-            animation: lsPulse 2s ease infinite;
-        }
-        .ls-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 3rem;
-            font-weight: 700;
-            letter-spacing: -1.5px;
-            color: #f1f5f9;
-        }
-        .ls-title span { background: linear-gradient(135deg, #3b82f6, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .ls-spinner {
-            width: 40px; height: 40px;
-            border: 3px solid rgba(59,130,246,0.2);
-            border-top-color: #3b82f6;
-            border-radius: 50%;
-            animation: lsSpin 0.8s linear infinite;
-        }
-        @keyframes lsFadeIn { to { opacity: 1; } }
-        @keyframes lsPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        @keyframes lsSpin { to { transform: rotate(360deg); } }
+        .modal-btn:hover { background: var(--accent-hover); }
     </style>
 </head>
-<body class="">
-
-    <!-- Loading Screen -->
-    <div id="loadingScreen">
-        <div class="ls-logo">
-            <div class="ls-icon"><i class="fa-solid fa-robot"></i></div>
-            <div class="ls-title">Faizan <span>AI</span></div>
+<body>
+    <!-- API Key Modal -->
+    <div class="modal-overlay" id="apiKeyModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title"><i class="fa-solid fa-key"></i> OpenRouter API Key</span>
+                <button class="modal-close" onclick="closeApiKeyModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <label class="modal-label">Enter your OpenRouter API key (free tier works)</label>
+            <input type="password" class="modal-input" id="apiKeyInput" placeholder="sk-or-v1-...">
+            <p style="font-size:0.7rem; color:var(--text-muted); margin-bottom:14px;">
+                Get one at <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--accent);">openrouter.ai/keys</a>
+            </p>
+            <button class="modal-btn" onclick="saveApiKey()">Save Key</button>
+            <p id="apiKeyStatus" style="font-size:0.75rem; margin-top:10px; text-align:center;"></p>
         </div>
-        <div class="ls-spinner"></div>
     </div>
 
-    <!-- HEADER -->
-    <header class="header">
+    <!-- Theme Modal -->
+    <div class="modal-overlay" id="themeModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title"><i class="fa-solid fa-palette"></i> Choose Theme</span>
+                <button class="modal-close" onclick="closeThemeModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <button class="modal-btn" style="background:#3b82f6;" onclick="setTheme('')">Default Blue</button>
+                <button class="modal-btn" style="background:#8b5cf6;" onclick="setTheme('theme-purple')">Purple</button>
+                <button class="modal-btn" style="background:#10b981;" onclick="setTheme('theme-green')">Green</button>
+                <button class="modal-btn" style="background:#f43f5e;" onclick="setTheme('theme-rose')">Rose</button>
+                <button class="modal-btn" style="background:#f59e0b;" onclick="setTheme('theme-amber')">Amber</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="header">
         <div class="header-logo">
             <div class="logo-icon"><i class="fa-solid fa-brain"></i></div>
-            <div class="logo-text">Faizan <span>AI</span></div>
+            <div class="logo-text">Faizan<span>AI</span></div>
         </div>
         <div class="header-controls">
             <div class="model-selector">
-                <button class="model-btn" id="modelBtn">
-                    <span id="currentModelName">Gemini 2.0 Flash</span>
-                    <span class="model-badge">Gemini</span>
+                <button class="model-btn" id="modelBtn" onclick="toggleModelDropdown()">
+                    <span id="currentModelName">Llama 3.2 3B</span>
+                    <span class="model-badge" id="currentModelBadge">Free</span>
                     <i class="fa-solid fa-chevron-down" style="font-size:0.65rem;"></i>
                 </button>
                 <div class="model-dropdown" id="modelDropdown"></div>
             </div>
-            <button class="icon-btn" id="themeBtn" title="Change Theme"><i class="fa-solid fa-palette"></i></button>
-            <button class="icon-btn" id="apiKeyBtn" title="API Key"><i class="fa-solid fa-key"></i></button>
-            <button class="icon-btn" id="toggleSidebar" title="Toggle Sidebar"><i class="fa-solid fa-sidebar"></i></button>
+            <button class="icon-btn" onclick="openApiKeyModal()" title="Set API Key"><i class="fa-solid fa-key"></i><span class="api-key-warning" id="apiKeyWarning"></span></button>
+            <button class="icon-btn" onclick="openThemeModal()" title="Change Theme"><i class="fa-solid fa-palette"></i></button>
+            <button class="icon-btn" onclick="toggleSidebar()" title="Toggle Sidebar"><i class="fa-solid fa-sidebar"></i></button>
         </div>
-    </header>
+    </div>
 
     <div class="main">
-        <!-- SIDEBAR -->
-        <aside class="sidebar" id="sidebar">
-            <button class="new-chat-btn" id="newChatBtn"><i class="fa-solid fa-plus"></i> New Chat</button>
-            <div class="sidebar-section">
-                <span>History</span>
-                <button class="icon-btn" id="clearHistoryBtn" style="width:24px;height:24px;font-size:0.7rem;" title="Clear All"><i class="fa-solid fa-trash-can"></i></button>
-            </div>
+        <div class="sidebar" id="sidebar">
+            <button class="new-chat-btn" onclick="newChat()"><i class="fa-solid fa-plus"></i> New Chat</button>
+            <div class="sidebar-section">Recent Chats</div>
             <div id="chatList"></div>
-        </aside>
-
-        <!-- CHAT AREA -->
-        <section class="chat-area">
+        </div>
+        <div class="chat-area">
             <div class="home-screen" id="homeScreen">
-                <div class="home-ai-title">Ask <span class="ai-word">Faizan AI</span></div>
-                <p class="home-subtitle">Powered by Google Gemini. Fast, intelligent, and multilingual.</p>
+                <div class="home-ai-title">
+                    <span class="ai-word">Faizan AI</span>
+                </div>
+                <p class="home-subtitle">Your free AI assistant powered by OpenRouter. Choose a model and start chatting.</p>
                 <div class="suggestion-grid">
-                    <div class="suggestion-card" data-prompt="Explain quantum computing in simple terms">
+                    <div class="suggestion-card" onclick="sendSuggestion('Explain quantum computing in simple terms')">
                         <div class="sc-icon">⚛️</div>
                         <div class="sc-title">Quantum Computing</div>
-                        <div class="sc-text">Explain like I'm 10</div>
+                        <div class="sc-text">Explain it like I'm five</div>
                     </div>
-                    <div class="suggestion-card" data-prompt="Write a haiku about AI">
-                        <div class="sc-icon">🎋</div>
+                    <div class="suggestion-card" onclick="sendSuggestion('Write a poem about AI and humanity')">
+                        <div class="sc-icon">✨</div>
                         <div class="sc-title">Creative Writing</div>
-                        <div class="sc-text">Write a haiku about AI</div>
+                        <div class="sc-text">A poem about AI and humanity</div>
                     </div>
-                    <div class="suggestion-card" data-prompt="Help me with a Python script to sort a list">
+                    <div class="suggestion-card" onclick="sendSuggestion('Help me debug a Python recursion error')">
                         <div class="sc-icon">🐍</div>
-                        <div class="sc-title">Code Help</div>
-                        <div class="sc-text">Sort a list in Python</div>
+                        <div class="sc-title">Debugging</div>
+                        <div class="sc-text">Python recursion error help</div>
                     </div>
-                    <div class="suggestion-card" data-prompt="Plan a 3-day trip to Istanbul">
-                        <div class="sc-icon">✈️</div>
-                        <div class="sc-title">Travel Plan</div>
-                        <div class="sc-text">3-day Istanbul itinerary</div>
+                    <div class="suggestion-card" onclick="sendSuggestion('What are the best practices for React?')">
+                        <div class="sc-icon">⚛️</div>
+                        <div class="sc-title">React Tips</div>
+                        <div class="sc-text">Best practices for React</div>
                     </div>
                 </div>
             </div>
             <div class="messages-container" id="messagesContainer"></div>
             <div class="input-area">
                 <div class="input-wrapper">
-                    <textarea id="messageInput" placeholder="Message Faizan AI..." rows="1"></textarea>
-                    <button class="send-btn" id="sendBtn"><i class="fa-solid fa-arrow-up"></i></button>
+                    <textarea id="messageInput" placeholder="Message Faizan AI..." rows="1" onkeydown="handleKeyDown(event)"></textarea>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()"><i class="fa-solid fa-arrow-up"></i></button>
                 </div>
-                <div class="input-footer">Faizan AI uses Google Gemini. Check your API key in settings.</div>
-            </div>
-        </section>
-    </div>
-
-    <!-- API KEY MODAL -->
-    <div class="modal-overlay" id="apiKeyModal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title"><i class="fa-solid fa-key"></i> Gemini API Key</div>
-                <button class="modal-close" id="closeApiModal"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="modal-label">Your Google Gemini API Key</div>
-            <input class="modal-input" type="password" id="apiKeyInput" placeholder="AIza...">
-            <div class="api-status" id="apiStatus">
-                <span class="status-dot" id="statusDot"></span>
-                <span id="statusText">Not verified</span>
-            </div>
-            <button class="save-btn" id="saveApiKeyBtn">Save & Verify</button>
-            <p style="font-size:0.7rem; color:var(--text-muted); margin-top:12px;">
-                Get your key from <a href="https://aistudio.google.com/apikey" target="_blank" style="color:var(--accent);">Google AI Studio</a>
-            </p>
-        </div>
-    </div>
-
-    <!-- THEME MODAL -->
-    <div class="modal-overlay" id="themeModal">
-        <div class="modal">
-            <div class="modal-header">
-                <div class="modal-title"><i class="fa-solid fa-palette"></i> Choose Theme</div>
-                <button class="modal-close" id="closeThemeModal"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="theme-grid">
-                <div class="theme-wrap" data-theme="default">
-                    <div class="theme-option selected" style="background:#3b82f6;"><i class="fa-solid fa-check" style="color:white;"></i></div>
-                    <div class="theme-label">Blue</div>
-                </div>
-                <div class="theme-wrap" data-theme="purple">
-                    <div class="theme-option" style="background:#8b5cf6;"></div>
-                    <div class="theme-label">Purple</div>
-                </div>
-                <div class="theme-wrap" data-theme="green">
-                    <div class="theme-option" style="background:#10b981;"></div>
-                    <div class="theme-label">Green</div>
-                </div>
-                <div class="theme-wrap" data-theme="rose">
-                    <div class="theme-option" style="background:#f43f5e;"></div>
-                    <div class="theme-label">Rose</div>
-                </div>
-                <div class="theme-wrap" data-theme="amber">
-                    <div class="theme-option" style="background:#f59e0b;"></div>
-                    <div class="theme-label">Amber</div>
-                </div>
+                <div class="input-footer">Faizan AI may produce inaccurate info. Verify important facts.</div>
             </div>
         </div>
     </div>
-
-    <!-- TOAST -->
-    <div class="toast" id="toast"></div>
 
     <script>
-        (function() {
-            // ---------- STATE ----------
-            const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models/';
-            let apiKey = localStorage.getItem('gemini_api_key') || '';
-            let currentModel = localStorage.getItem('gemini_model') || 'gemini-2.0-flash';
-            let currentTheme = localStorage.getItem('theme') || 'default';
-            let chats = JSON.parse(localStorage.getItem('faizan_chats') || '[]');
-            let activeChatId = localStorage.getItem('active_chat_id') || null;
-            let currentMessages = []; // messages of active chat
-            let isStreaming = false;
-            let abortController = null;
+        // ---------- OPENROUTER FREE MODELS ----------
+        const FREE_MODELS = [
+            { id: "meta-llama/llama-3.2-3b-instruct:free", name: "Llama 3.2 3B", provider: "Meta", badge: "Free" },
+            { id: "google/gemma-2-9b-it:free", name: "Gemma 2 9B", provider: "Google", badge: "Free" },
+            { id: "mistralai/mistral-7b-instruct:free", name: "Mistral 7B", provider: "Mistral", badge: "Free" },
+            { id: "deepseek/deepseek-r1:free", name: "DeepSeek R1", provider: "DeepSeek", badge: "Free" }
+        ];
 
-            // DOM elements
-            const loadingScreen = document.getElementById('loadingScreen');
-            const modelBtn = document.getElementById('modelBtn');
-            const modelDropdown = document.getElementById('modelDropdown');
-            const currentModelName = document.getElementById('currentModelName');
-            const homeScreen = document.getElementById('homeScreen');
-            const messagesContainer = document.getElementById('messagesContainer');
-            const messageInput = document.getElementById('messageInput');
-            const sendBtn = document.getElementById('sendBtn');
-            const toast = document.getElementById('toast');
-            const sidebar = document.getElementById('sidebar');
-            const chatList = document.getElementById('chatList');
-            const apiKeyModal = document.getElementById('apiKeyModal');
-            const themeModal = document.getElementById('themeModal');
-            const apiKeyInput = document.getElementById('apiKeyInput');
-            const statusDot = document.getElementById('statusDot');
-            const statusText = document.getElementById('statusText');
+        // ---------- STATE ----------
+        let currentModel = FREE_MODELS[0];
+        let conversations = JSON.parse(localStorage.getItem('faizan_conversations') || '[]');
+        let activeConvId = localStorage.getItem('faizan_active_conv') || null;
+        let messages = [];
+        let isStreaming = false;
+        let abortController = null;
+        let apiKey = localStorage.getItem('openrouter_api_key') || '';
 
-            // ---------- MODELS ----------
-            const models = [
-                { group: '🚀 Fast & Efficient', items: [
-                    { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash', tag: 'Next gen speed', free: true },
-                    { id: 'gemini-2.0-flash-lite-preview-02-05', name: 'Gemini 2.0 Flash-Lite (Preview)', tag: 'Cost efficient', free: true },
-                    { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash', tag: 'Balanced', free: true },
-                    { id: 'gemini-1.5-flash-8b', name: 'Gemini 1.5 Flash-8B', tag: 'Small & fast', free: true }
-                ]},
-                { group: '💪 Powerful', items: [
-                    { id: 'gemini-2.0-pro-exp-02-05', name: 'Gemini 2.0 Pro (Experimental)', tag: 'Best quality', free: false },
-                    { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro', tag: 'High accuracy', free: false }
-                ]},
-                { group: '🧪 Experimental', items: [
-                    { id: 'gemini-2.0-flash-exp', name: 'Gemini 2.0 Flash (Experimental)', tag: 'Cutting-edge', free: true },
-                    { id: 'gemini-2.0-flash-thinking-exp-01-21', name: 'Gemini 2.0 Flash Thinking', tag: 'Reasoning', free: true }
-                ]},
-                { group: '📚 Previous Generation', items: [
-                    { id: 'gemini-1.0-pro', name: 'Gemini 1.0 Pro', tag: 'Legacy', free: true }
-                ]}
-            ];
+        // ---------- DOM ELEMENTS ----------
+        const homeScreen = document.getElementById('homeScreen');
+        const messagesContainer = document.getElementById('messagesContainer');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const chatList = document.getElementById('chatList');
+        const modelDropdown = document.getElementById('modelDropdown');
+        const currentModelName = document.getElementById('currentModelName');
+        const currentModelBadge = document.getElementById('currentModelBadge');
+        const apiKeyWarning = document.getElementById('apiKeyWarning');
+        const apiKeyInput = document.getElementById('apiKeyInput');
+        const apiKeyStatus = document.getElementById('apiKeyStatus');
 
-            function getModelById(id) {
-                for (const group of models) {
-                    const found = group.items.find(m => m.id === id);
-                    if (found) return found;
-                }
-                return models[0].items[0]; // fallback
-            }
-
-            function renderModelDropdown() {
-                let html = '';
-                models.forEach(group => {
-                    html += `<div class="model-group-label">${group.group}</div>`;
-                    group.items.forEach(m => {
-                        const activeClass = m.id === currentModel ? ' active' : '';
-                        const freeBadge = m.free ? '<span class="mi-free">Free</span>' : '';
-                        html += `
-                        <div class="model-item${activeClass}" data-model="${m.id}">
-                            <div class="mi-icon"><i class="fa-solid fa-microchip"></i></div>
-                            <div class="mi-info">
-                                <div class="mi-name">${m.name}</div>
-                                <div class="mi-tag">${m.tag}</div>
-                            </div>
-                            ${freeBadge}
-                        </div>`;
-                    });
-                });
-                modelDropdown.innerHTML = html;
-                updateModelButton();
-            }
-
-            function updateModelButton() {
-                const model = getModelById(currentModel);
-                currentModelName.textContent = model.name;
-                // highlight active in dropdown
-                document.querySelectorAll('.model-item').forEach(el => el.classList.remove('active'));
-                const activeItem = document.querySelector(`.model-item[data-model="${currentModel}"]`);
-                if (activeItem) activeItem.classList.add('active');
-            }
-
-            function setModel(modelId) {
-                currentModel = modelId;
-                localStorage.setItem('gemini_model', modelId);
-                updateModelButton();
-                renderModelDropdown();
-                showToast(`Model set to ${getModelById(modelId).name}`);
-            }
-
-            // ---------- THEME ----------
-            function applyTheme(theme) {
-                document.body.classList.remove('theme-purple', 'theme-green', 'theme-rose', 'theme-amber');
-                if (theme && theme !== 'default') {
-                    document.body.classList.add(`theme-${theme}`);
-                }
-                document.querySelectorAll('.theme-option').forEach(el => el.classList.remove('selected'));
-                const themeWrap = document.querySelector(`.theme-wrap[data-theme="${theme || 'default'}"] .theme-option`);
-                if (themeWrap) themeWrap.classList.add('selected');
-            }
-
-            function setTheme(theme) {
-                currentTheme = theme;
-                localStorage.setItem('theme', theme);
-                applyTheme(theme);
-            }
-
-            // ---------- API KEY ----------
-            function checkApiKey() {
-                if (!apiKey) {
-                    openApiKeyModal();
+        // ---------- INIT ----------
+        function init() {
+            buildModelDropdown();
+            updateModelUI();
+            loadConversations();
+            if (activeConvId) {
+                const conv = conversations.find(c => c.id === activeConvId);
+                if (conv) {
+                    messages = conv.messages || [];
+                    renderMessages();
+                    homeScreen.classList.add('hidden');
+                    messagesContainer.classList.add('visible');
                 } else {
-                    verifyApiKey();
+                    activeConvId = null;
+                    showHome();
                 }
+            } else {
+                showHome();
             }
-
-            async function verifyApiKey() {
-                statusDot.className = 'status-dot';
-                statusText.textContent = 'Verifying...';
-                try {
-                    const res = await fetch(`${API_BASE}${currentModel}:generateContent?key=${apiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ role: 'user', parts: [{ text: 'test' }] }],
-                            generationConfig: { maxOutputTokens: 1 }
-                        })
-                    });
-                    if (res.ok) {
-                        statusDot.className = 'status-dot active';
-                        statusText.textContent = 'API key valid';
-                        localStorage.setItem('gemini_api_key', apiKey);
-                    } else {
-                        const err = await res.json();
-                        statusDot.className = 'status-dot error';
-                        statusText.textContent = 'Invalid key: ' + (err.error?.message || res.status);
-                    }
-                } catch (e) {
-                    statusDot.className = 'status-dot error';
-                    statusText.textContent = 'Network error';
-                }
+            checkApiKeyWarning();
+            // Auto-open API key modal if no key
+            if (!apiKey) {
+                setTimeout(() => openApiKeyModal(), 500);
             }
+        }
 
-            function openApiKeyModal() {
-                apiKeyInput.value = apiKey;
-                apiKeyModal.classList.add('open');
-                if (apiKey) verifyApiKey();
-                else {
-                    statusDot.className = 'status-dot';
-                    statusText.textContent = 'Not verified';
-                }
+        function showHome() {
+            homeScreen.classList.remove('hidden');
+            messagesContainer.classList.remove('visible');
+            messagesContainer.innerHTML = '';
+            messages = [];
+            activeConvId = null;
+            localStorage.removeItem('faizan_active_conv');
+        }
+
+        function checkApiKeyWarning() {
+            if (!apiKey) {
+                apiKeyWarning.style.display = 'block';
+            } else {
+                apiKeyWarning.style.display = 'none';
             }
+        }
 
-            function closeApiKeyModal() {
-                apiKeyModal.classList.remove('open');
+        // ---------- API KEY MODAL ----------
+        function openApiKeyModal() {
+            document.getElementById('apiKeyModal').classList.add('open');
+            apiKeyInput.value = apiKey;
+            apiKeyStatus.textContent = '';
+        }
+        function closeApiKeyModal() {
+            document.getElementById('apiKeyModal').classList.remove('open');
+            checkApiKeyWarning();
+        }
+        function saveApiKey() {
+            const key = apiKeyInput.value.trim();
+            if (!key.startsWith('sk-or-')) {
+                apiKeyStatus.textContent = 'Invalid key format. Must start with sk-or-';
+                apiKeyStatus.style.color = 'var(--error)';
+                return;
             }
+            apiKey = key;
+            localStorage.setItem('openrouter_api_key', key);
+            apiKeyStatus.textContent = '✅ API key saved!';
+            apiKeyStatus.style.color = 'var(--success)';
+            setTimeout(closeApiKeyModal, 1200);
+            checkApiKeyWarning();
+        }
 
-            // ---------- CHAT MANAGEMENT ----------
-            function generateId() {
-                return Date.now().toString(36) + Math.random().toString(36).substr(2);
-            }
+        // ---------- THEME ----------
+        function openThemeModal() { document.getElementById('themeModal').classList.add('open'); }
+        function closeThemeModal() { document.getElementById('themeModal').classList.remove('open'); }
+        function setTheme(themeClass) {
+            document.body.className = themeClass;
+            localStorage.setItem('faizan_theme', themeClass);
+            closeThemeModal();
+        }
+        // Load theme
+        const savedTheme = localStorage.getItem('faizan_theme');
+        if (savedTheme) document.body.className = savedTheme;
 
-            function saveChats() {
-                localStorage.setItem('faizan_chats', JSON.stringify(chats));
-                localStorage.setItem('active_chat_id', activeChatId);
-            }
-
-            function getActiveChat() {
-                return chats.find(c => c.id === activeChatId);
-            }
-
-            function createNewChat() {
-                const newChat = {
-                    id: generateId(),
-                    title: 'New Chat',
-                    messages: [],
-                    createdAt: Date.now()
-                };
-                chats.unshift(newChat);
-                activeChatId = newChat.id;
-                saveChats();
-                renderChatList();
-                loadActiveChat();
-            }
-
-            function deleteChat(id) {
-                chats = chats.filter(c => c.id !== id);
-                if (activeChatId === id) {
-                    activeChatId = chats.length > 0 ? chats[0].id : null;
-                }
-                saveChats();
-                renderChatList();
-                loadActiveChat();
-            }
-
-            function loadActiveChat() {
-                const chat = getActiveChat();
-                if (!chat) {
-                    // create default if none
-                    if (chats.length === 0) {
-                        createNewChat();
-                        return;
-                    } else {
-                        activeChatId = chats[0].id;
-                        saveChats();
-                    }
-                }
-                const active = getActiveChat();
-                currentMessages = active ? active.messages : [];
-                renderMessages();
-                renderChatList();
-            }
-
-            function addMessage(role, text) {
-                const chat = getActiveChat();
-                if (!chat) return;
-                chat.messages.push({ role, text, timestamp: Date.now() });
-                if (chat.title === 'New Chat' && role === 'user' && text.trim()) {
-                    chat.title = text.substring(0, 40) + (text.length > 40 ? '...' : '');
-                }
-                saveChats();
-                currentMessages = chat.messages;
-                renderMessages();
-                renderChatList();
-            }
-
-            function renderChatList() {
-                if (!chatList) return;
-                chatList.innerHTML = chats.map(chat => `
-                    <div class="chat-item${chat.id === activeChatId ? ' active' : ''}" data-id="${chat.id}">
-                        <span style="flex:1; overflow:hidden; text-overflow:ellipsis;">${chat.title}</span>
-                        <i class="fa-solid fa-xmark" style="font-size:0.7rem; opacity:0.5; margin-left:8px; cursor:pointer;" data-delete="${chat.id}"></i>
+        // ---------- MODEL SELECTOR ----------
+        function buildModelDropdown() {
+            modelDropdown.innerHTML = '';
+            const groupLabel = document.createElement('div');
+            groupLabel.className = 'model-group-label';
+            groupLabel.textContent = 'Free Models (OpenRouter)';
+            modelDropdown.appendChild(groupLabel);
+            FREE_MODELS.forEach(model => {
+                const item = document.createElement('div');
+                item.className = 'model-item';
+                item.innerHTML = `
+                    <div class="mi-icon">${model.provider[0]}</div>
+                    <div class="mi-info">
+                        <div class="mi-name">${model.name}</div>
+                        <div class="mi-tag">${model.provider}</div>
                     </div>
-                `).join('');
+                    <span class="mi-free">FREE</span>
+                `;
+                item.addEventListener('click', () => selectModel(model));
+                modelDropdown.appendChild(item);
+            });
+        }
 
-                // delete handlers
-                document.querySelectorAll('[data-delete]').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        deleteChat(btn.dataset.delete);
-                    });
-                });
-            }
+        function selectModel(model) {
+            currentModel = model;
+            updateModelUI();
+            modelDropdown.classList.remove('open');
+        }
 
-            function renderMessages() {
-                messagesContainer.innerHTML = '';
-                if (!currentMessages || currentMessages.length === 0) {
-                    homeScreen.classList.remove('hidden');
-                    messagesContainer.classList.remove('visible');
-                    return;
-                }
+        function updateModelUI() {
+            currentModelName.textContent = currentModel.name;
+            currentModelBadge.textContent = currentModel.badge;
+            const items = modelDropdown.querySelectorAll('.model-item');
+            items.forEach((item, idx) => {
+                item.classList.toggle('active', FREE_MODELS[idx].id === currentModel.id);
+            });
+        }
+
+        function toggleModelDropdown() {
+            modelDropdown.classList.toggle('open');
+        }
+
+        // ---------- SIDEBAR & CONVERSATIONS ----------
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('hidden');
+        }
+
+        function loadConversations() {
+            conversations = JSON.parse(localStorage.getItem('faizan_conversations') || '[]');
+            renderChatList();
+        }
+
+        function renderChatList() {
+            chatList.innerHTML = '';
+            conversations.slice().reverse().forEach(conv => {
+                const div = document.createElement('div');
+                div.className = `chat-item ${conv.id === activeConvId ? 'active' : ''}`;
+                div.textContent = conv.title || 'New Chat';
+                div.addEventListener('click', () => switchConversation(conv.id));
+                chatList.appendChild(div);
+            });
+        }
+
+        function newChat() {
+            saveCurrentConversation();
+            const id = Date.now().toString();
+            const conv = { id, title: 'New Chat', messages: [] };
+            conversations.push(conv);
+            localStorage.setItem('faizan_conversations', JSON.stringify(conversations));
+            switchConversation(id);
+        }
+
+        function switchConversation(id) {
+            saveCurrentConversation();
+            activeConvId = id;
+            localStorage.setItem('faizan_active_conv', id);
+            const conv = conversations.find(c => c.id === id);
+            if (conv) {
+                messages = conv.messages || [];
+                renderMessages();
                 homeScreen.classList.add('hidden');
                 messagesContainer.classList.add('visible');
-                currentMessages.forEach(msg => {
-                    appendMessageToDOM(msg.role, msg.text);
-                });
-                scrollToBottom();
             }
+            renderChatList();
+        }
 
-            function appendMessageToDOM(role, text) {
-                const wrap = document.createElement('div');
-                wrap.className = `message-wrap ${role}`;
-                const avatarIcon = role === 'user' ? '<i class="fa-solid fa-user"></i>' : '<i class="fa-solid fa-robot"></i>';
-                wrap.innerHTML = `
-                    <div class="msg-avatar ${role}">${avatarIcon}</div>
-                    <div class="msg-content">
-                        <div class="msg-meta">
-                            <span>${role === 'user' ? 'You' : 'Faizan AI'}</span>
-                            <span>${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                        </div>
-                        <div class="msg-bubble ${role}">${formatText(text)}</div>
-                    </div>
-                `;
-                messagesContainer.appendChild(wrap);
-            }
-
-            function formatText(text) {
-                // simple markdown-like formatting for code blocks
-                return text
-                    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
-                    .replace(/\n/g, '<br>');
-            }
-
-            function scrollToBottom() {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-
-            // ---------- GEMINI API ----------
-            async function sendMessage(userText) {
-                if (!apiKey) {
-                    showToast('Please set your Gemini API key first', 'error');
-                    openApiKeyModal();
-                    return;
+        function saveCurrentConversation() {
+            if (!activeConvId) return;
+            const conv = conversations.find(c => c.id === activeConvId);
+            if (conv) {
+                conv.messages = messages;
+                if (messages.length > 0 && conv.title === 'New Chat') {
+                    const firstUser = messages.find(m => m.role === 'user');
+                    conv.title = firstUser ? firstUser.content.substring(0, 30) : 'New Chat';
                 }
-                if (isStreaming) return;
-                addMessage('user', userText);
-                messageInput.value = '';
-                messageInput.style.height = 'auto';
+                localStorage.setItem('faizan_conversations', JSON.stringify(conversations));
+                renderChatList();
+            }
+        }
 
-                // Show typing indicator
-                const typingWrap = document.createElement('div');
-                typingWrap.className = 'message-wrap ai';
-                typingWrap.innerHTML = `
-                    <div class="msg-avatar ai"><i class="fa-solid fa-robot"></i></div>
-                    <div class="msg-content">
-                        <div class="msg-meta"><span>Faizan AI</span></div>
-                        <div class="msg-bubble ai">
-                            <div class="typing-indicator">
-                                <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                messagesContainer.appendChild(typingWrap);
-                scrollToBottom();
+        // ---------- MESSAGES RENDERING ----------
+        function renderMessages() {
+            messagesContainer.innerHTML = '';
+            if (messages.length === 0) {
+                showHome();
+                return;
+            }
+            messages.forEach((msg, index) => {
+                appendMessageToDOM(msg.role, msg.content, false);
+            });
+            scrollToBottom();
+        }
 
-                // Prepare contents for Gemini API
-                const contents = [];
-                // Use last 20 messages to keep context manageable
-                const recent = currentMessages.slice(-20);
-                recent.forEach(msg => {
-                    contents.push({
-                        role: msg.role === 'user' ? 'user' : 'model',
-                        parts: [{ text: msg.text }]
-                    });
+        function appendMessageToDOM(role, content, animate = true) {
+            const wrap = document.createElement('div');
+            wrap.className = `message-wrap ${role}`;
+            const avatarIcon = role === 'user' ? '👤' : '🤖';
+            wrap.innerHTML = `
+                <div class="msg-avatar ${role}">${avatarIcon}</div>
+                <div class="msg-content">
+                    <div class="msg-meta">${role === 'user' ? 'You' : currentModel.name} · ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
+                    <div class="msg-bubble ${role}">${formatContent(content)}</div>
+                </div>
+            `;
+            messagesContainer.appendChild(wrap);
+            if (animate) scrollToBottom();
+        }
+
+        function formatContent(text) {
+            // Simple markdown-like formatting
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/\n/g, '<br>');
+        }
+
+        function scrollToBottom() {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // ---------- SEND MESSAGE ----------
+        async function sendMessage(overrideText) {
+            const text = overrideText || messageInput.value.trim();
+            if (!text || isStreaming) return;
+            if (!apiKey) {
+                openApiKeyModal();
+                return;
+            }
+
+            // UI switch
+            homeScreen.classList.add('hidden');
+            messagesContainer.classList.add('visible');
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+
+            // Add user message
+            messages.push({ role: 'user', content: text });
+            appendMessageToDOM('user', text);
+            saveCurrentConversation();
+
+            // Create AI message placeholder
+            const aiMsgIndex = messages.length;
+            messages.push({ role: 'assistant', content: '' });
+            appendMessageToDOM('assistant', '', false);
+            const aiBubble = messagesContainer.lastElementChild.querySelector('.msg-bubble');
+            aiBubble.innerHTML = '<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+            scrollToBottom();
+
+            // Prepare streaming
+            isStreaming = true;
+            sendBtn.innerHTML = '<i class="fa-solid fa-stop"></i>';
+            sendBtn.classList.add('stop-btn');
+            abortController = new AbortController();
+
+            try {
+                const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`,
+                    },
+                    body: JSON.stringify({
+                        model: currentModel.id,
+                        messages: messages.filter(m => m.role !== 'system'), // No system for simplicity
+                        stream: true,
+                    }),
+                    signal: abortController.signal,
                 });
 
-                const requestBody = {
-                    contents: contents,
-                    generationConfig: {
-                        temperature: 0.7,
-                        maxOutputTokens: 2048,
-                    }
-                };
+                if (!response.ok) {
+                    const err = await response.json();
+                    throw new Error(err.error?.message || 'API error');
+                }
 
-                abortController = new AbortController();
-                isStreaming = true;
-                sendBtn.innerHTML = '<i class="fa-solid fa-stop"></i>';
-                sendBtn.classList.add('stop-btn');
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let fullContent = '';
 
-                try {
-                    const response = await fetch(`${API_BASE}${currentModel}:streamGenerateContent?alt=sse&key=${apiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(requestBody),
-                        signal: abortController.signal
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.error?.message || `Error ${response.status}`);
-                    }
-
-                    // Remove typing indicator
-                    typingWrap.remove();
-
-                    // Create AI message bubble for streaming
-                    const aiWrap = document.createElement('div');
-                    aiWrap.className = 'message-wrap ai';
-                    aiWrap.innerHTML = `
-                        <div class="msg-avatar ai"><i class="fa-solid fa-robot"></i></div>
-                        <div class="msg-content">
-                            <div class="msg-meta"><span>Faizan AI</span></div>
-                            <div class="msg-bubble ai" id="streamingBubble"></div>
-                        </div>
-                    `;
-                    messagesContainer.appendChild(aiWrap);
-                    const bubble = aiWrap.querySelector('#streamingBubble');
-                    bubble.id = ''; // remove id to avoid duplicates
-
-                    const reader = response.body.getReader();
-                    const decoder = new TextDecoder();
-                    let fullText = '';
-                    let buffer = '';
-
-                    while (true) {
-                        const { done, value } = await reader.read();
-                        if (done) break;
-                        buffer += decoder.decode(value, { stream: true });
-                        const lines = buffer.split('\n');
-                        buffer = lines.pop() || '';
-                        for (const line of lines) {
-                            if (line.startsWith('data: ')) {
-                                const jsonStr = line.slice(6).trim();
-                                if (jsonStr === '[DONE]') continue;
-                                try {
-                                    const data = JSON.parse(jsonStr);
-                                    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-                                    if (text) {
-                                        fullText += text;
-                                        bubble.innerHTML = formatText(fullText);
-                                        scrollToBottom();
-                                    }
-                                } catch (e) {}
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    const chunk = decoder.decode(value);
+                    const lines = chunk.split('\n').filter(line => line.startsWith('data: '));
+                    for (const line of lines) {
+                        const data = line.slice(6);
+                        if (data === '[DONE]') continue;
+                        try {
+                            const parsed = JSON.parse(data);
+                            const delta = parsed.choices?.[0]?.delta?.content;
+                            if (delta) {
+                                fullContent += delta;
+                                aiBubble.innerHTML = formatContent(fullContent);
+                                scrollToBottom();
                             }
-                        }
+                        } catch (e) {}
                     }
-
-                    if (fullText) {
-                        addMessage('ai', fullText);
-                    } else {
-                        addMessage('ai', '(No response)');
-                    }
-
-                } catch (error) {
-                    if (error.name === 'AbortError') {
-                        showToast('Generation stopped');
-                    } else {
-                        showToast(`Error: ${error.message}`, 'error');
-                        addMessage('ai', `⚠️ ${error.message}`);
-                    }
-                    typingWrap.remove();
-                } finally {
-                    isStreaming = false;
-                    abortController = null;
-                    sendBtn.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
-                    sendBtn.classList.remove('stop-btn');
                 }
-            }
-
-            function stopGeneration() {
-                if (abortController) {
-                    abortController.abort();
-                }
-            }
-
-            // ---------- UI HELPERS ----------
-            function showToast(msg, type = 'info') {
-                const toastEl = document.getElementById('toast');
-                toastEl.textContent = msg;
-                toastEl.className = 'toast show';
-                if (type === 'error') toastEl.style.borderColor = 'var(--error)';
-                else toastEl.style.borderColor = 'var(--border-accent)';
-                setTimeout(() => toastEl.classList.remove('show'), 3000);
-            }
-
-            // ---------- EVENT LISTENERS ----------
-            modelBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                modelDropdown.classList.toggle('open');
-            });
-            document.addEventListener('click', () => modelDropdown.classList.remove('open'));
-            modelDropdown.addEventListener('click', (e) => {
-                const item = e.target.closest('.model-item');
-                if (item) {
-                    setModel(item.dataset.model);
-                    modelDropdown.classList.remove('open');
-                }
-            });
-
-            document.getElementById('themeBtn').addEventListener('click', () => themeModal.classList.add('open'));
-            document.getElementById('closeThemeModal').addEventListener('click', () => themeModal.classList.remove('open'));
-            document.querySelectorAll('.theme-wrap').forEach(wrap => {
-                wrap.addEventListener('click', () => {
-                    const theme = wrap.dataset.theme;
-                    setTheme(theme);
-                    themeModal.classList.remove('open');
-                });
-            });
-
-            document.getElementById('apiKeyBtn').addEventListener('click', openApiKeyModal);
-            document.getElementById('closeApiModal').addEventListener('click', closeApiKeyModal);
-            document.getElementById('saveApiKeyBtn').addEventListener('click', () => {
-                apiKey = apiKeyInput.value.trim();
-                if (apiKey) {
-                    verifyApiKey();
+                messages[aiMsgIndex].content = fullContent;
+                saveCurrentConversation();
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    messages[aiMsgIndex].content += ' [stopped]';
                 } else {
-                    statusDot.className = 'status-dot error';
-                    statusText.textContent = 'Please enter a key';
+                    messages[aiMsgIndex].content = `❌ Error: ${error.message}`;
                 }
-            });
-
-            document.getElementById('toggleSidebar').addEventListener('click', () => {
-                sidebar.classList.toggle('hidden');
-            });
-
-            document.getElementById('newChatBtn').addEventListener('click', createNewChat);
-            document.getElementById('clearHistoryBtn').addEventListener('click', () => {
-                if (confirm('Clear all chat history?')) {
-                    chats = [];
-                    activeChatId = null;
-                    saveChats();
-                    renderChatList();
-                    loadActiveChat();
-                }
-            });
-
-            sendBtn.addEventListener('click', () => {
-                if (isStreaming) {
-                    stopGeneration();
-                    return;
-                }
-                const text = messageInput.value.trim();
-                if (!text) return;
-                sendMessage(text);
-            });
-
-            messageInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendBtn.click();
-                }
-            });
-
-            // Auto-resize textarea
-            messageInput.addEventListener('input', () => {
-                messageInput.style.height = 'auto';
-                messageInput.style.height = messageInput.scrollHeight + 'px';
-            });
-
-            // Suggestion cards
-            document.querySelectorAll('.suggestion-card').forEach(card => {
-                card.addEventListener('click', () => {
-                    const prompt = card.dataset.prompt;
-                    if (prompt) {
-                        messageInput.value = prompt;
-                        sendBtn.click();
-                    }
-                });
-            });
-
-            // ---------- INIT ----------
-            function init() {
-                applyTheme(currentTheme);
-                renderModelDropdown();
-                if (apiKey) verifyApiKey();
-                loadActiveChat();
-                // Hide loading screen
-                setTimeout(() => {
-                    loadingScreen.classList.add('hide');
-                }, 1500);
+                aiBubble.innerHTML = formatContent(messages[aiMsgIndex].content);
+                saveCurrentConversation();
+            } finally {
+                isStreaming = false;
+                abortController = null;
+                sendBtn.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+                sendBtn.classList.remove('stop-btn');
+                if (messages.length > 0) saveCurrentConversation();
             }
+        }
 
-            init();
-        })();
+        function stopStreaming() {
+            if (abortController) {
+                abortController.abort();
+            }
+        }
+
+        function sendSuggestion(text) {
+            sendMessage(text);
+        }
+
+        function handleKeyDown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (isStreaming) {
+                    stopStreaming();
+                } else {
+                    sendMessage();
+                }
+            }
+        }
+
+        // Send button toggle stop
+        sendBtn.addEventListener('click', () => {
+            if (isStreaming) {
+                stopStreaming();
+            } else {
+                sendMessage();
+            }
+        });
+
+        // Auto-resize textarea
+        messageInput.addEventListener('input', () => {
+            messageInput.style.height = 'auto';
+            messageInput.style.height = messageInput.scrollHeight + 'px';
+        });
+
+        // Close dropdowns on outside click
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.model-selector')) {
+                modelDropdown.classList.remove('open');
+            }
+        });
+
+        // Initialize
+        init();
     </script>
 </body>
 </html>
